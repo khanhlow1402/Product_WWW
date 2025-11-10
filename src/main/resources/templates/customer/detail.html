@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi Tiết Khách Hàng</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #e9f2ff;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: auto;
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px 40px;
+            box-shadow: 0 4px 12px rgba(13,110,253,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0d6efd;
+            margin-bottom: 30px;
+        }
+
+        .info-section {
+            background-color: #f8f9fa;
+            border-left: 4px solid #0d6efd;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 10px 0;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #495057;
+            width: 200px;
+        }
+
+        .info-value {
+            color: #212529;
+            flex: 1;
+        }
+
+        .orders-section {
+            margin-top: 30px;
+        }
+
+        .orders-section h2 {
+            color: #0d6efd;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background-color: #0d6efd;
+            color: white;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        tbody tr:hover {
+            background-color: #f1f8ff;
+        }
+
+        .empty-orders {
+            text-align: center;
+            color: #6c757d;
+            font-style: italic;
+            padding: 20px;
+        }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 25px;
+            text-decoration: none;
+            background-color: #0d6efd;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn-back:hover {
+            background-color: #0b5ed7;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .badge-success {
+            background-color: #d1e7dd;
+            color: #0f5132;
+        }
+
+        .badge-info {
+            background-color: #cff4fc;
+            color: #055160;
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>👤 Chi Tiết Khách Hàng</h1>
+
+    <div class="info-section">
+        <div class="info-row">
+            <div class="info-label">ID:</div>
+            <div class="info-value" th:text="${customer.id}">1</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Tên khách hàng:</div>
+            <div class="info-value" th:text="${customer.name}">Nguyễn Văn A</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Email:</div>
+            <div class="info-value" th:text="${customer.email != null ? customer.email : 'Chưa cập nhật'}">email@example.com</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Số điện thoại:</div>
+            <div class="info-value" th:text="${customer.phoneNumber != null ? customer.phoneNumber : 'Chưa cập nhật'}">0912345678</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Địa chỉ:</div>
+            <div class="info-value" th:text="${customer.address != null ? customer.address : 'Chưa cập nhật'}">Hà Nội</div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Ngày đăng ký:</div>
+            <div class="info-value"
+                 th:text="${customer.customerSince != null ? #calendars.format(customer.customerSince, 'dd-MM-yyyy') : 'N/A'}">
+                01-01-2024
+            </div>
+        </div>
+        <div class="info-row">
+            <div class="info-label">Tổng số đơn hàng:</div>
+            <div class="info-value">
+                <span class="badge badge-info"
+                      th:text="${customer.orders != null ? customer.orders.size() : 0} + ' đơn'">
+                    0 đơn
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <div class="orders-section">
+        <h2>📦 Lịch Sử Đơn Hàng</h2>
+
+        <div th:if="${customer.orders == null or #lists.isEmpty(customer.orders)}"
+             class="empty-orders">
+            <p>Khách hàng chưa có đơn hàng nào</p>
+        </div>
+
+        <div th:if="${customer.orders != null and !#lists.isEmpty(customer.orders)}">
+            <table>
+                <thead>
+                <tr>
+                    <th>Mã đơn</th>
+                    <th>Ngày đặt</th>
+                    <th>Số sản phẩm</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="order : ${customer.orders}">
+                    <td th:text="${order.id}">#1</td>
+                    <td th:text="${#calendars.format(order.date, 'dd-MM-yyyy')}">01-01-2024</td>
+                    <td th:text="${order.orderLines != null ? order.orderLines.size() : 0}">0</td>
+                    <td th:text="${#numbers.formatDecimal(order.getTotalAmount(), 0, 'COMMA', 2, 'POINT')} + ' USD'">
+                        100 USD
+                    </td>
+                    <td>
+                        <span class="badge badge-success">Hoàn thành</span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <a th:href="@{/customer}" class="btn-back">← Quay lại Danh sách</a>
+</div>
+</body>
+</html>
