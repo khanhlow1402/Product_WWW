@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh Sách Hóa Đơn</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #e9f2ff;
+            margin: 0;
+            padding: 40px 0;
+        }
+
+        .container {
+            max-width: 900px;
+            background-color: #ffffff;
+            margin: auto;
+            padding: 40px;
+            border-radius: 14px;
+            box-shadow: 0 6px 25px rgba(13, 110, 253, 0.15);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0d6efd;
+            margin-bottom: 30px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        thead {
+            background: linear-gradient(135deg, #0d6efd, #5eb8ff);
+            color: white;
+        }
+
+        th, td {
+            padding: 14px 16px;
+            text-align: center;
+        }
+
+        tbody tr:nth-child(even) { background-color: #f4f9ff; }
+
+        tbody tr:hover { background-color: #dbeaff; }
+
+        a {
+            color: #0d6efd;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        a:hover { text-decoration: underline; }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 25px;
+            text-decoration: none;
+            background-color: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        .btn-back:hover { background-color: #5a6268; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>🧾 Danh Sách Hóa Đơn</h1>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Mã HĐ</th>
+            <th>Khách hàng</th>
+            <th>Ngày đặt</th>
+            <th>Tổng tiền</th> 
+            <th>Chi tiết</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="order : ${orders}">
+            <td th:text="${order.id}">1</td>
+            <td th:text="${order.customer.name}">Tên KH</td>
+            <td th:text="${#calendars.format(order.date, 'dd-MM-yyyy')}">01-01-2023</td>
+            <td th:text="${#numbers.formatDecimal(order.getTotalAmount(), 0, 'COMMA', 2, 'POINT')} + ' USD'">100 USD</td>
+            <td><a th:href="@{/order/{id}(id=${order.id})}">🔍 Xem</a></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <a th:href="@{/home}" class="btn-back">← Quay về Trang Chủ</a>
+</div>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Trang Chủ - Ứng Dụng Mua Sắm</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+            font-family: "Poppins", sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .home-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            padding: 50px 60px;
+            width: 900px;
+            text-align: center;
+            transition: transform 0.4s ease;
+        }
+
+        .home-container:hover {
+            transform: scale(1.02);
+        }
+
+        .app-logo {
+            width: 110px;
+            height: 110px;
+            border-radius: 50%;
+            background: #fff;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 25px;
+            object-fit: cover;
+        }
+
+        h1 {
+            font-weight: 700;
+            color: #343a40;
+            margin-bottom: 10px;
+        }
+
+        .subtext {
+            color: #6c757d;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+
+        .options {
+            display: flex;
+            justify-content: center;
+            gap: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .option-card {
+            width: 320px;
+            background: #f8f9fa;
+            border-radius: 16px;
+            text-decoration: none;
+            color: #212529;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+            transition: all 0.35s ease;
+        }
+
+        .option-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+
+        .option-card .icon {
+            font-size: 3rem;
+            margin-top: 30px;
+        }
+
+        .option-card h3 {
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        .option-card p {
+            color: #6c757d;
+            font-size: 0.95rem;
+            padding: 0 25px 30px;
+        }
+
+        .option-card.product {
+            background: linear-gradient(145deg, #51c2d5, #7dd3fc);
+            color: #fff;
+        }
+
+        .option-card.order {
+            background: linear-gradient(145deg, #7b5de3, #a78bfa);
+            color: #fff;
+        }
+
+        .option-card p {
+            color: #f0f0f0;
+        }
+
+        footer {
+            margin-top: 35px;
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+    </style>
+</head>
+<body>
+
+<div class="home-container">
+    <div class="user-bar">
+        <span th:if="${#authorization.expression('isAuthenticated()')}"
+              th:text="'Xin chào, ' + ${#authentication.name}">Xin chào</span>
+
+        <a th:if="${#authorization.expression('isAuthenticated()')}"
+           th:href="@{/logout}" class="logout">Đăng xuất</a>
+
+        <a th:if="${#authorization.expression('!isAuthenticated()')}"
+           th:href="@{/login}">Đăng nhập</a>
+        <a th:if="${#authorization.expression('!isAuthenticated()')}"
+           th:href="@{/register}">Đăng ký</a>
+    </div>
+
+    <p class="h5 mb-4 text-dark">Acc admin: admin pass:123, acc customer: customer pass:111</p>
+    <p class="h5 mb-4 text-dark">Vui lòng chọn chức năng:</p>
+    <img src="https://cdn-icons-png.flaticon.com/512/869/869636.png" alt="App Logo" class="app-logo">
+    <h1>Chào mừng đến với Ứng Dụng Mua Sắm</h1>
+    <p class="subtext">Khám phá - Mua sắm - Quản lý hóa đơn dễ dàng</p>
+
+    <div class="options">
+        <a th:href="@{/product}" class="option-card product">
+            <div class="icon">🛒</div>
+            <h3>Sản phẩm</h3>
+            <p>Xem danh sách sản phẩm và thêm vào giỏ hàng của bạn</p>
+        </a>
+
+        <a th:href="@{/order}" class="option-card order">
+            <div class="icon">📦</div>
+            <h3>Hóa đơn</h3>
+            <p>Xem và quản lý các hóa đơn mua hàng của bạn</p>
+        </a>
+    </div>
+
+<!--    <footer>© 2025 Ứng Dụng Mua Sắm — Thiết kế bởi <strong></strong></footer>-->
+</div>?
+
+</body>
+</html>

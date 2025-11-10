@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Danh Sách Sản Phẩm</title>
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9f2ff;
+            margin: 0;
+            padding: 40px 0;
+        }
+
+        .container {
+            max-width: 900px;
+            background-color: #ffffff;
+            margin: auto;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color:  #0d6efd;
+            margin-bottom: 30px;
+            font-weight: 600;
+        }
+
+        /* Thanh user info */
+        .user-bar {
+            text-align: right;
+            margin-bottom: 20px;
+            color: #555;
+        }
+
+        .user-bar a {
+            text-decoration: none;
+            color: #0d6efd;
+            margin-left: 10px;
+            font-weight: 500;
+        }
+
+        .user-bar a.logout {
+            color: #dc3545;
+        }
+
+        /* Form lọc danh mục */
+        .search-bar {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        select, button {
+            padding: 10px 14px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-right: 10px;
+        }
+
+        button {
+            background-color:  #0d6efd;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            border: none;
+        }
+
+        button:hover {
+            background-color: #0a58ca;
+        }
+
+        /* Card sản phẩm */
+        .product {
+            border: 1px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            background-color: #ffffff;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 128, 0, 0.15);
+        }
+
+        .product h2 {
+            color:  #0d6efd;
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+        }
+
+        .product p {
+            margin: 5px 0;
+            color: #555;
+        }
+
+        .product a {
+            display: inline-block;
+            margin-top: 10px;
+            text-decoration: none;
+            color:  #0d6efd;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .product a:hover {
+            color: #0a58ca;
+        }
+
+        /* Comment */
+        .comments {
+            margin-top: 15px;
+            background-color: #f9fcf9;
+            border-radius: 8px;
+            padding: 10px 15px;
+        }
+
+        .comments h3 {
+            color:  #0d6efd;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+
+        .comment {
+            border-left: 3px solid  #0d6efd;
+            padding-left: 10px;
+            color: #6c757d;
+            font-style: italic;
+        }
+        .btn-back, .btn-add {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+
+        .btn-back {
+            background-color: #6c757d;
+            color: white;
+        }
+
+        .btn-back:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-add {
+            background-color:  #0d6efd;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background-color: #0a58ca;
+        }
+        .action-bar {
+            display: flex;
+            justify-content: flex-start;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .btn-add, .btn-cart {
+            display: inline-block;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: background-color 0.3s;
+            color: white;
+        }
+
+        /* --- Form thêm vào giỏ hàng --- */
+        .add-to-cart-form {
+            margin-top: 15px;
+        }
+
+        .quantity-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .quantity-label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .quantity-input {
+            width: 70px;
+            padding: 8px 10px;
+            border: 1px solid #cfe2ff;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 15px;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .quantity-input:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 6px rgba(13,110,253,0.2);
+            outline: none;
+        }
+
+        .btn-cart {
+            background-color: #0d6efd;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 10px 18px;
+            font-size: 15px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .btn-cart:hover {
+            background-color: #0a58ca;
+            transform: translateY(-2px);
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+
+    <!-- 🔐 Thông tin người dùng -->
+    <div th:if="${errorMessage}" class="alert alert-danger" th:text="${errorMessage}"></div>
+    <div th:if="${successMessage}" class="alert alert-success" th:text="${successMessage}"></div>
+    <div class="user-bar">
+        <span th:if="${#authorization.expression('isAuthenticated()')}"
+              th:text="'Xin chào, ' + ${#authentication.name}">Xin chào</span>
+
+        <a th:if="${#authorization.expression('isAuthenticated()')}"
+           th:href="@{/logout}" class="logout">Đăng xuất</a>
+
+        <a th:if="${#authorization.expression('!isAuthenticated()')}"
+           th:href="@{/login}">Đăng nhập</a>
+        <a th:if="${#authorization.expression('!isAuthenticated()')}"
+           th:href="@{/register}">Đăng ký</a>
+    </div>
+
+    <h1>📦 Danh Sách Sản Phẩm</h1>
+
+    <!-- 🟩 Nút Thêm sản phẩm cho ADMIN -->
+    <div class="action-bar" th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+        <a th:href="@{/product/add}" class="btn-add">➕ Thêm sản phẩm</a>
+    </div>
+    <div class="action-bar">
+        <a th:href="@{/cart}" class="btn-add" style="color:white; font-weight:600;">
+            🛒 Xem giỏ hàng
+        </a>
+    </div>
+
+
+    <!-- 🔍 Thanh chọn danh mục -->
+    <div class="search-bar">
+        <form th:action="@{/product/category}" method="get">
+            <label for="categorySelect" class="me-2 fw-bold text-secondary">Lọc theo danh mục:</label>
+            <select id="categorySelect" name="categoryId">
+                <option value="">-- Tất cả danh mục --</option>
+                <option th:each="cat : ${categories}"
+                        th:value="${cat.id}"
+                        th:text="${cat.name}"
+                        th:selected="${cat.id == selectedCategoryId}">
+                </option>
+            </select>
+            <button type="submit">Tìm kiếm</button>
+        </form>
+    </div>
+    <div class="text-center mt-4">
+        <a th:href="@{/home}" class="btn-back">← Quay về Trang Chủ</a>
+    </div>
+    <!-- 🧾 Danh sách sản phẩm -->
+    <div th:each="product : ${products}" class="product">
+        <h2 th:text="${product.name}">Tên Sản Phẩm</h2>
+        <p><strong>Giá:</strong> <span th:text="${product.price}">0</span> VND</p>
+
+        <p>
+            <strong>Danh mục:</strong>
+            <span th:text="${product.category != null ? product.category.name : 'Không có danh mục'}">Danh mục</span>
+        </p>
+
+        <a th:href="@{'/product/detail/' + ${product.id}}">🔍 Xem chi tiết</a>
+
+        <!-- 🧰 Chức năng quản lý chỉ cho ADMIN -->
+        <div th:if="${#authorization.expression('hasRole(''ADMIN'')')}">
+            <a th:href="@{'/product/edit/' + ${product.id}}">✏️ Sửa</a>
+            <a th:href="@{'/product/delete/' + ${product.id}}"
+               onclick="return confirm('Xóa sản phẩm này?');">🗑️ Xóa</a>
+        </div>
+
+        <div class="comments">
+            <h3>💬 Bình luận:</h3>
+            <div th:if="${#lists.isEmpty(product.comments)}">
+                <p><em>Không có bình luận nào</em></p>
+            </div>
+            <div th:if="${!#lists.isEmpty(product.comments)}" class="comment">
+                <span th:text="${product.comments.get(0).text}">Bình luận đầu tiên...</span>
+            </div>
+        </div>
+        <form th:action="@{/cart/add}" method="post" class="add-to-cart-form">
+            <input type="hidden" name="productId" th:value="${product.id}">
+            <div class="quantity-group">
+                <label class="quantity-label">Số lượng:</label>
+                <input type="number" name="quantity" value="1" min="1" class="quantity-input">
+                <button type="submit" class="btn-cart">🛒 Thêm vào giỏ</button>
+            </div>
+        </form>
+
+    </div>
+
+    <!-- 💬 Chatbox AI Gợi ý sản phẩm -->
+    <div id="chat-container" style="position: fixed; bottom: 20px; right: 20px; width: 350px;">
+        <div id="chat-box"
+             style="background-color: #fff; border: 1px solid #ccc; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); padding: 15px; height: 400px; overflow-y: auto;">
+            <div id="chat-messages"></div>
+        </div>
+
+        <div style="margin-top: 10px; display: flex;">
+            <input id="chat-input" type="text" placeholder="Hỏi gợi ý sản phẩm..."
+                   style="flex: 1; padding: 10px; border-radius: 8px; border: 1px solid #ccc;">
+            <button id="chat-send" style="margin-left: 5px; background-color: #0d6efd; color: white; border: none; border-radius: 8px; padding: 10px 15px;">
+                Gửi
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const sendBtn = document.getElementById("chat-send");
+        const input = document.getElementById("chat-input");
+        const messages = document.getElementById("chat-messages");
+
+        function appendMessage(sender, text) {
+            const div = document.createElement("div");
+            div.style.margin = "5px 0";
+            div.innerHTML = `<strong>${sender}:</strong> ${text}`;
+            messages.appendChild(div);
+            messages.scrollTop = messages.scrollHeight;
+        }
+
+        sendBtn.onclick = async () => {
+            const prompt = input.value.trim();
+            if (!prompt) return;
+
+            appendMessage("Bạn", prompt);
+            input.value = "";
+
+            appendMessage("AI", "<em>Đang gợi ý...</em>");
+
+            const response = await fetch("/chat/ask", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({ prompt })
+            });
+            const data = await response.text();
+
+            messages.lastChild.innerHTML = `<strong>AI:</strong> ${data}`;
+        };
+    </script>
+</div>
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi Tiết Hóa Đơn</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #e9f2ff;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: auto;
+            background: #fff;
+            border-radius: 14px;
+            padding: 40px;
+            box-shadow: 0 6px 25px rgba(13, 110, 253, 0.15);
+        }
+
+        h1 { color: #0d6efd; text-align: center; }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        th, td {
+            border: 1px solid #dee2e6;
+            padding: 12px 14px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #0d6efd;
+            color: white;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+
+        tr:nth-child(even) { background-color: #f4f9ff; }
+
+        .btn-back {
+            display: inline-block;
+            margin-top: 25px;
+            text-decoration: none;
+            background-color: #0d6efd;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+        }
+
+        .btn-back:hover { background-color: #0b5ed7; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Chi Tiết Hóa Đơn #<span th:text="${order.id}">1</span></h1>
+    <p><strong>Khách hàng:</strong> <span th:text="${order.customer.name}">Tên KH</span></p>
+    <p><strong>Ngày đặt:</strong> <span th:text="${#calendars.format(order.date, 'dd-MM-yyyy')}">01-01-2023</span></p>
+
+    <h2>Sản phẩm đã đặt:</h2>
+    <table>
+        <thead>
+        <tr>
+            <th>Tên Sản phẩm</th>
+            <th>Giá mua</th>
+            <th>Số lượng</th>
+            <th>Thành tiền</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="line : ${order.orderLines}">
+            <td th:text="${line.product.name}">Tên SP</td>
+            <td th:text="${line.purchasePrice} + ' USD'">10 USD</td>
+            <td th:text="${line.amount}">2</td>
+            <td th:text="${#numbers.formatDecimal(line.purchasePrice * line.amount, 0, 'COMMA', 2, 'POINT')} + ' USD'">20 USD</td>
+        </tr>
+        </tbody>
+        <tfoot>
+        <tr>
+            <td colspan="3" style="text-align: right;"><strong>TỔNG CỘNG:</strong></td>
+            <td th:text="${#numbers.formatDecimal(order.getTotalAmount(), 0, 'COMMA', 2, 'POINT')} + ' USD'">100 USD</td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <a th:href="@{/order}" class="btn-back">← Quay lại Danh sách Hóa đơn</a>
+</div>
+</body>
+</html>

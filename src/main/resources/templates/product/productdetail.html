@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Chi Tiết Sản Phẩm</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: #e9f2ff;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background: #fff;
+            border-radius: 12px;
+            padding: 30px 40px;
+            box-shadow: 0 4px 12px rgba(13,110,253,0.2);
+        }
+
+        h1 {
+            text-align: center;
+            color: #0d6efd;
+            margin-bottom: 20px;
+        }
+
+        .product-info p { font-size: 16px; margin: 8px 0; }
+
+        .status strong { color: #0d6efd; }
+
+        .comments {
+            margin-top: 25px;
+            border-top: 2px solid #e0e7ff;
+            padding-top: 15px;
+        }
+
+        .comments h3 {
+            color: #0d6efd;
+            margin-bottom: 10px;
+        }
+
+        .comment {
+            background-color: #f3f8ff;
+            border-left: 4px solid #0d6efd;
+            margin-bottom: 12px;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-style: italic;
+        }
+
+        .no-comments { color: #777; font-style: italic; }
+
+        .btn-back {
+            display: inline-block;
+            text-decoration: none;
+            background-color: #0d6efd;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            transition: background-color 0.3s;
+        }
+
+        .btn-back:hover { background-color: #0b5ed7; }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: #aaa;
+            font-size: 13px;
+        }
+
+        .add-comment {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f8fbff;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(13,110,253,0.1);
+        }
+
+        .add-comment h3 {
+            color: #0d6efd;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .comment-form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .comment-form textarea {
+            width: 100%;
+            min-height: 90px;
+            border: 1px solid #cfe2ff;
+            border-radius: 8px;
+            padding: 10px;
+            font-size: 15px;
+            resize: vertical;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .comment-form textarea:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 4px rgba(13,110,253,0.2);
+        }
+
+        .comment-form button {
+            align-self: flex-end;
+            margin-top: 10px;
+            background-color: #0d6efd;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 20px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .comment-form button:hover {
+            background-color: #0b5ed7;
+            transform: translateY(-2px);
+        }
+
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Chi Tiết Sản Phẩm</h1>
+
+    <div class="product-info">
+        <p class="status">
+            <strong>Tên:</strong>
+        <span th:text="${product.name}"></span>
+        </p>
+        <p class="status">
+            <strong>Giá:</strong>
+            <span th:text="${product.price}  + ' USD'"></span>
+        </p>
+        <p class="status">
+            <strong>Danh mục:</strong>
+            <span th:text="${product.category.name}"></span>
+        </p>
+        <p class="status">
+            <strong>Trạng thái:</strong>
+            <span th:text="${product.inStock} ? 'Còn hàng' : 'Hết hàng'"></span>
+        </p>
+    </div>
+
+    <div class="comments">
+        <h3>Bình luận:</h3>
+        <div th:if="${#lists.isEmpty(product.comments)}">
+            <p class="no-comments"><em>Chưa có bình luận</em></p>
+        </div>
+        <div th:each="c: ${product.comments}" class="comment">
+            <span th:text="${c.text}">Comment Content</span>
+        </div>
+    </div>
+
+    <!-- Form thêm comment -->
+    <div class="add-comment">
+        <h3>Thêm bình luận:</h3>
+        <form th:action="@{/product/{id}/comment(id=${product.id})}" method="post" class="comment-form">
+            <textarea name="text" placeholder="Nhập bình luận..." required></textarea>
+            <button type="submit">Gửi bình luận</button>
+        </form>
+    </div>
+
+    <a th:href="@{/product}" class="btn-back">← Quay lại danh sách</a>
+    <div class="footer">© 2025 Product Detail Page</div>
+</div>
+</body>
+</html>

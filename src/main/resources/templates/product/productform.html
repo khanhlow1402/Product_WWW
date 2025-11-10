@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm / Cập nhật sản phẩm</title>
+    <style>
+        body {
+            background-color: #e9f2ff;
+            font-family: "Segoe UI", Tahoma, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 18px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #0d6efd;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+
+        }
+
+        input[type="checkbox"] {
+            margin-right: 6px;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #0d6efd;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: #0d6efd;
+        }
+
+        .actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #0d6efd;
+            font-weight: bold;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h2 th:text="${isEdit} ? '✏️ Cập nhật sản phẩm' : '🆕 Thêm sản phẩm mới'"></h2>
+
+    <form th:action="@{/product/save}" method="post" th:object="${product}">
+        <input type="hidden" th:field="*{id}"/>
+
+        <label for="name">Tên sản phẩm</label>
+        <input type="text" id="name" th:field="*{name}" placeholder="Nhập tên sản phẩm" required/>
+        <p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" style="color: red;"></p>
+
+        <label for="price">Giá bán (VNĐ)</label>
+        <input type="number" step="0.01" id="price" th:field="*{price}" placeholder="VD: 199000" required/>
+        <p th:if="${#fields.hasErrors('price')}" th:errors="*{price}" style="color: red;"></p>
+
+        <!-- Khi thêm mới -->
+        <div th:if="${!isEdit}">
+            <label for="categoryName">Danh mục</label>
+            <input type="text" id="categoryName" name="categoryName"
+                   placeholder="Nhập danh mục mới" required/>
+            <p th:if="${#fields.hasErrors('categoryName')}" th:errors="*{categoryName}" style="color: red;"></p>
+        </div>
+
+        <!-- Khi chỉnh sửa -->
+        <div th:if="${isEdit}">
+            <label for="categoryId">Danh mục</label>
+            <select id="categoryId" name="categoryId">
+                <option th:value="${product.category != null ? product.category.id : ''}"
+                        th:text="${product.category != null ? product.category.name : '-- Chọn danh mục --'}"
+                        selected>
+                </option>
+                <option th:each="c : ${categories}"
+                        th:value="${c.id}"
+                        th:text="${c.name}"
+                        th:if="${product.category == null or c.id != product.category.id}">
+                </option>
+            </select>
+        </div>
+
+        <label>
+            <input type="checkbox" th:field="*{inStock}"/> Còn hàng
+        </label>
+
+        <div class="actions">
+            <a th:href="@{/product}">⬅ Quay lại</a>
+            <button type="submit" class="btn">💾 Lưu</button>
+        </div>
+
+    </form>
+</div>
+
+</body>
+</html>
